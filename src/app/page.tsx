@@ -1,113 +1,189 @@
-import Image from 'next/image'
+"use client"
+
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
+import { auth } from '../firebase/firebase'
+import { createUserWithEmailAndPassowrd } from 'firebase/auth'
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+  const Signin = () => {
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [confirmpassword, setConfirmPassword] = useState("")
+    const [error, setError] = useState("")
+    const [success, setSuccess] = useState("")
+    
+    const register = (e) => {
+      e.preventDefault()
+      if (password !== confirmpassword) {
+        return setError("Passwords do not match")
+      }
+      auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
+        // Signed in 
+        var user = userCredential.user;
+        setSuccess("Account created successfully")
+        // ...
+      })
+        .catch((error) => {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          setError(errorMessage)
+          // ..
+        });
+    }
+  }
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px]">
+
+  const toggle = () => {
+    const password = document.getElementById('password');
+    const confirmpassword = document.getElementById('confirmpassword')
+    if (password.getAttribute('type') === 'password' || confirmpassword?.getAttribute('type') === 'password') {
+      password.setAttribute('type', 'text');
+      confirmpassword?.setAttribute('type', 'text');
+
+    } else {
+      password.setAttribute('type', 'password');
+      confirmpassword?.setAttribute('type', 'password');
+
+    }
+  }
+  return (
+    <div className="bg-gray-50 text-black h-[100vh] w-full relative">
+      <div className="absolute inset-0 bg-gradient-to-br">
         <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+          src="/background2.jpg"
+          alt="Background Image"
+          layout="fill"
+          objectFit="cover"
+          priority={true}
         />
       </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <nav>
+        <div className="flex justify-between items-center p-4 shadow-sm absolute w-full">
+          <div className="flex items-center space-x-4">
+            <Image src="/logo_mine.png" width={40} height={40} />
+            <h1 className="text-2xl font-bold">Login-Register</h1>
+          </div>
+          <div className="flex items-center space-x-4">
+            <a href="/login" className="text-lg font-semibold hover:text-white hover:underline-offset-1">
+              Home
+            </a>
+            <a href="/register" className="text-lg font-semibold hover:text-white hover:underline-offset-1">
+              About
+            </a>
+            <a href="/contact" className="text-lg font-semibold hover:text-white hover:underline-offset-1">
+              Contact
+            </a>
+            <a href="/login" className="text-lg font-semibold p-2 rounded-lg hover:bg-white hover:text-black hover:shadow-md hover:transition-shadow hover:cursor-pointer outline-none">
+              Login
+            </a>
+            <a href="/register" className="text-lg font-semibold">
+              Register
+            </a>
+          </div>
+        </div>
+      </nav>
+      <div className="flex justify-center items-center h-full relative">
+        <div className="bg-black bg-opacity-60 h-[400px auto] w-[500px] p-8 rounded-lg shadow-lg">
+          {/* Add your login form components here */}
+          <h2 className="text-2xl font-bold mb-4 flex mx-auto items-center justify-center uppercase font-serif text-white">Register</h2>
+          <form>
+            <div>
+            <label htmlFor="names" className="block text-sm font-medium text-white">
+                Names
+              </label>
+              <div className="mt-1">
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autoComplete="email"
+                  required
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
+                />
+              </div>
+              <label htmlFor="email" className="block text-sm font-medium text-white">
+                Email address
+              </label>
+              <div className="mt-1">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  required
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
+                />
+              </div>
+              <div className="mt-1 relative">
+              <label htmlFor="email" className="block text-sm font-medium text-white">
+                Password
+              </label>
+                <div className='flex items-center'>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="email"
+                  required
+                  className="appearance-none block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
+                />
+                {/* <svg></svg> */}
+                <Image
+                  src="/eye-off.svg"
+                  alt="Background Image"
+                  width={20}
+                  height={20}
+                  className='absolute right-2 bottom-2 hover:cursor-pointer'
+                  onClick={toggle}
+                 
+                />
+                </div>
+              </div>
+              <div className="mt-1 relative">
+              <label htmlFor="email" className="block text-sm font-medium text-white">
+                Confirm Password
+              </label>
+                <div className='flex items-center'>
+                <input
+                  id="confirmpassword"
+                  name="confirmpassword"
+                  type="password"
+                  autoComplete="email"
+                  required
+                  className="appearance-none block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
+                />
+                {/* <svg></svg> */}
+                <Image
+                  src="/eye-off.svg"
+                  alt="Background Image"
+                  width={20}
+                  height={20}
+                  className='absolute right-2 bottom-2 hover:cursor-pointer'
+                  onClick={toggle}
+                 
+                />
+                </div>
+              </div>
+              <div className='mt-2'>
+                <input type='checkbox' className=''/>
+                <span className='m-2 p-2 text-lg space-x-2 text-white'>Remember Me</span>
+              </div>
+            </div>
+            <div className='m-2 p-3 mx-auto items-center justify-center shadow-xlg flex'>
+              <button type='submit' className='bg-gray-50 text-xl p-1 rounded-sm font-serif font-extrabold hover:bg-gray-400 hover:delay-75 hover:shadow-lg'>Register</button>
+              {/* <a href='login' className='text-white text-md hover:underline m-2 '>Sign In</a> */}
+              <Link href={'/login'} className='text-white text-md hover:underline m-2 '>Sign In</Link>
+            </div>
+          </form>
+        </div>
       </div>
-    </main>
-  )
+    </div>
+  );
 }
+
