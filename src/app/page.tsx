@@ -5,14 +5,14 @@ import Link from 'next/link';
 import firebase from '../../firebase/firebase';
 import React, { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
 
 
 
 export default function Login() {
   const auth = firebase.auth();
   const firestore = firebase.firestore();
-  const router = useRouter();
+  
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,19 +20,20 @@ export default function Login() {
   const [success, setSuccess] = useState('');
 
 
+  // const router = typeof window !== 'undefined' ? useRouter() : null;
 
   const handleEmailSignIn = async (e) => {
     e.preventDefault();
 
     try {
-      await auth.signInWithEmailAndPassword(email, password);
-      // If successful, do something (e.g., redirect to a dashboard)
+      const userCredential = await auth.signInWithEmailAndPassword(email, password);
+      const user = userCredential.user;
       console.log('User signed in successfully');
       setSuccess('User signed in successfully')
-      setTimeout(() => {
-        setSuccess('');
-        router.push('/homepage'); // Redirect to /homepage after successful login
-      }, 3000);
+      // setTimeout(() => {
+      //   setSuccess('');
+      //   router.push('/homepage'); // Redirect to /homepage after successful login
+      // }, 3000);
     } catch (error) {
       setError(error.message);
       console.error('Error signing in with email and password:', error);
