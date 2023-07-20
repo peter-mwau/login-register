@@ -112,6 +112,30 @@ export default function Login() {
               {/* <a href='login' className='text-white text-md hover:underline m-2 '>Sign In</a> */}
               <Link href={'/register'} className='text-white text-md hover:underline m-2 '>Sign Up</Link>
             </div>
+            <div className='flex flex-row mx-auto items-center justify-center'>
+              <div className='items-start m-1 p-2'>
+                <button type='submit' className='bg-gray-300 p-2 rounded-md hover:bg-gray-50 flex justify-between'>
+                <Image
+                  src="/google.png"
+                  alt="Background Image"
+                  width={20}
+                  height={20}
+                  className='hover:cursor-pointer mr-1'
+                />
+                  Sign In With Google</button>
+              </div>
+              <div className='items-end m-1 p-2'>
+                <button className='bg-gray-300 p-2 rounded-md hover:bg-gray-50 flex space-x-2'>
+                <Image
+                  src="/github.png"
+                  alt="Background Image"
+                  width={20}
+                  height={20}
+                  className='hover:cursor-pointer mr-1'
+                />
+                  Sign In With Github</button>
+              </div>
+            </div>
           </form>
         </div>
       </div>
