@@ -2,11 +2,55 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-// import { useState } from 'react';
-// import { auth } from '../../firebase/firebase'
-// import { createUserWithEmailAndPassowrd } from 'firebase/auth'
+import firebase from '../../firebase/firebase';
+import React, { useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useRouter } from 'next/router';
+
+
 
 export default function Login() {
+  const auth = firebase.auth();
+  const firestore = firebase.firestore();
+  const router = useRouter();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+
+
+  const handleEmailSignIn = async (e) => {
+    e.preventDefault();
+
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      // If successful, do something (e.g., redirect to a dashboard)
+      console.log('User signed in successfully');
+      setSuccess('User signed in successfully')
+      setTimeout(() => {
+        setSuccess('');
+        router.push('/homepage'); // Redirect to /homepage after successful login
+      }, 3000);
+    } catch (error) {
+      setError(error.message);
+      console.error('Error signing in with email and password:', error);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+  
+    try {
+      const result = await firebase.auth().signInWithPopup(provider);
+      // You can access the user information from the result object
+      console.log(result.user);
+    } catch (error) {
+      console.error('Error signing in with Google:', error);
+    }
+  };
+
 
   const toggle = () => {
     const password = document.getElementById('password');
@@ -58,7 +102,18 @@ export default function Login() {
         <div className="bg-black bg-opacity-60 h-[400px auto] w-[500px] p-8 rounded-lg shadow-lg">
           {/* Add your login form components here */}
           <h2 className="text-2xl font-bold mb-4 flex mx-auto items-center justify-center uppercase font-serif text-white">Login</h2>
-          <form>
+          {/* error/success */}
+        {error && (
+          <div className=" text-red-400 font-serif font-semibold p-2">
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className= "text-green-500 font-serif font-semibold p-2">
+            {success}
+          </div>
+        )}
+          <form onSubmit={handleEmailSignIn}>
             <div className="space-y-4">
               <label htmlFor="email" className="block text-sm font-medium text-white">
                 Email address
@@ -68,10 +123,10 @@ export default function Login() {
                   id="email"
                   name="email"
                   type="email"
-                  // value={email}
-                  // onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   autoComplete="email"
-                  required
+                  // required
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
                 />
               </div>
@@ -84,10 +139,10 @@ export default function Login() {
                   id="password"
                   name="password"
                   type="password"
-                  // value={password}
-                  // onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   autoComplete="email"
-                  required
+                  // required
                   className="appearance-none block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
                 />
                 {/* <svg></svg> */}
@@ -114,7 +169,7 @@ export default function Login() {
             </div>
             <div className='flex flex-row mx-auto items-center justify-center'>
               <div className='items-start m-1 p-2'>
-                <button type='submit' className='bg-gray-300 p-2 rounded-md hover:bg-gray-50 flex justify-between'>
+                <button type='submit' onClick={handleGoogleSignIn} className='bg-gray-300 p-2 rounded-md hover:bg-gray-50 flex justify-between'>
                 <Image
                   src="/google.png"
                   alt="Background Image"
